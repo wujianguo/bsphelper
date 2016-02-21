@@ -33,15 +33,13 @@ class SlackHandler(tornado.web.RequestHandler):
 
     def post(self):
         pgyer = self.get_query_argument("pgyer", None)
-        try:
-            msg = json.loads(self.request.body)
-            fallback = msg["attachments"][0]["fallback"]
-            if fallback.find("succeeded") != -1 and pgyer:
-                self.response_success(pgyer)
-            else:
-                requests.post("https://hooks.slack.com/services/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", data=self.request.body)
-        except:
-            pass
+        logging.info(self.request.body)
+        msg = json.loads(self.request.body)
+        fallback = msg["attachments"][0]["fallback"]
+        if fallback.find("succeeded") != -1 and pgyer:
+            self.response_success(pgyer)
+        else:
+            requests.post("https://hooks.slack.com/services/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", data=self.request.body)
         self.write("ok")
 
 settings = {
