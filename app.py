@@ -10,6 +10,17 @@ import requests
 import logging
 
 
+class BuddybuildHandler(tornado.web.RequestHandler):
+
+    def post(self):
+        logging.error(self.request.body)
+        headers = {"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmM3ZWM4MzNiY2ZmMzAxMDA4NTY5YmUiLCJpYXQiOjE0NTU5NjIzNzIxMzQsImV4cCI6MTQ1NTk4MDM3MjEzNH0.ZFzUmadAo5rO-nkd42VRhn7d0l0v_3J9ceVtX9kQSWM"}
+        r = requests.post("https://dashboard.buddybuild.com/api/apps/56c80da323276801006af4ed/build?branch=master", headers=headers)
+        if r.json().get("error", None):
+            self.write(json.dumps({"text": "error:" + r.json().get("error", "")}))
+        else:
+            self.write(json.dumps({"text": "deploy 开始成功，正在编译。。。"}))
+
 class SlackHandler(tornado.web.RequestHandler):
 
     def response_success(self, pgyer):
@@ -33,7 +44,7 @@ class SlackHandler(tornado.web.RequestHandler):
 
     def post(self):
         pgyer = self.get_query_argument("pgyer", None)
-        logging.info(self.request.body)
+        logging.error(self.request.body)
         msg = json.loads(self.request.body)
         fallback = msg["attachments"][0]["fallback"]
         if fallback.find("succeeded") != -1 and pgyer:
@@ -51,6 +62,7 @@ settings = {
 
 application = tornado.web.Application([
     (r"/slack", SlackHandler),
+    (r"/buddybuild", BuddybuildHandler)
 ], **settings)
 
 app = tornado.wsgi.WSGIAdapter(application)
