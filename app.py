@@ -13,6 +13,7 @@ import logging
 class SlackHandler(tornado.web.RequestHandler):
 
     def post(self):
+        print(self.request.body)
         logging.error(self.request.body)
         self.write("ok")
 
