@@ -19,7 +19,7 @@ class BuddybuildHandler(tornado.web.RequestHandler):
         if r.json().get("error", None):
             self.write(json.dumps({"text": "error:" + r.json().get("error", "")}))
         else:
-            self.write(json.dumps({"text": "deploy 开始成功，正在编译。。。"}))
+            self.write(json.dumps({"text": "开始成功，正在编译。。。"}))
 
 class SlackHandler(tornado.web.RequestHandler):
 
